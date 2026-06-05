@@ -13,9 +13,20 @@ const adminRoutes = require('./routes/admin');
 
 const app = express();
 
+const allowedOrigins = [
+  'http://localhost:3000',
+  'https://toyxona-frontend.oktamovshohjahon596.workers.dev',
+  ...(process.env.FRONTEND_URL ? process.env.FRONTEND_URL.split(',').map((o) => o.trim()) : []),
+];
+
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin) || /\.workers\.dev$/.test(new URL(origin).hostname)) {
+        return callback(null, true);
+      }
+      return callback(new Error(`Not allowed by CORS: ${origin}`));
+    },
     credentials: true,
   })
 );
