@@ -226,7 +226,7 @@ async function getVenueDetailStats(venueId) {
 
 async function getClientBookings(phone) {
   return Booking.find({ clientPhone: phone })
-    .populate('venue', 'name region images address')
+    .populate('venue', 'name region district images address')
     .sort({ date: -1 })
     .limit(50);
 }

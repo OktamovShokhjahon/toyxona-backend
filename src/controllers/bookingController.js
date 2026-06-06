@@ -190,6 +190,33 @@ async function updateBookingStatus(req, res, next) {
     if (status === 'confirmed' && !wasConfirmed) {
       await Venue.findByIdAndUpdate(venue._id, { $inc: { totalBookings: 1 } });
     }
+    if (status === 'cancelled' && wasConfirmed) {
+      await Venue.findByIdAndUpdate(venue._id, { $inc: { totalBookings: -1 } });
+    }
+    res.json(booking);
+  } catch (err) {
+    next(err);
+  }
+}
+
+async function cancelMyBooking(req, res, next) {
+  try {
+    const user = await User.findById(req.user.userId);
+    if (!user) return res.status(404).json({ message: 'Foydalanuvchi topilmadi' });
+    const booking = await Booking.findById(req.params.id);
+    if (!booking) return res.status(404).json({ message: 'Bron topilmadi' });
+    if (booking.clientPhone !== user.phone) {
+      return res.status(403).json({ message: 'Bu bronni bekor qila olmaysiz' });
+    }
+    if (booking.status === 'cancelled') {
+      return res.status(400).json({ message: 'Bron allaqachon bekor qilingan' });
+    }
+    const wasConfirmed = booking.status === 'confirmed';
+    booking.status = 'cancelled';
+    await booking.save();
+    if (wasConfirmed) {
+      await Venue.findByIdAndUpdate(booking.venue, { $inc: { totalBookings: -1 } });
+    }
     res.json(booking);
   } catch (err) {
     next(err);
@@ -218,5 +245,6 @@ module.exports = {
   ownerDashboardExport,
   getMyBookings,
   updateBookingStatus,
+  cancelMyBooking,
   getAllBookings,
 };

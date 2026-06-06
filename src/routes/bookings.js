@@ -8,6 +8,7 @@ const {
   ownerDashboardExport,
   getMyBookings,
   updateBookingStatus,
+  cancelMyBooking,
   getAllBookings,
 } = require('../controllers/bookingController');
 const { verifyToken, optionalAuth } = require('../middleware/auth');
@@ -31,6 +32,8 @@ router.post(
 );
 
 router.get('/my', verifyToken, getMyBookings);
+
+router.put('/:id/cancel', verifyToken, cancelMyBooking);
 
 router.get('/venue/:venueId', verifyToken, requireRole('owner', 'admin'), getVenueBookings);
 
