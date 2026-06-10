@@ -125,11 +125,13 @@ async function createVenue(req, res, next) {
     if (images.length < 3) {
       return res.status(400).json({ message: 'At least 3 images are required' });
     }
+    const mapLink = typeof req.body.mapLink === 'string' ? req.body.mapLink.trim() : '';
     const venue = await Venue.create({
       owner: req.user.userId,
       name: req.body.name,
       description: req.body.description,
       address: req.body.address,
+      mapLink: mapLink || undefined,
       region: req.body.region,
       district: req.body.district,
       phone: req.body.phone,
@@ -161,6 +163,10 @@ async function updateVenue(req, res, next) {
     const updates = { ...req.body };
     if (updates.pricePerSession) updates.pricePerSession = Number(updates.pricePerSession);
     if (updates.capacity) updates.capacity = Number(updates.capacity);
+    if (updates.mapLink !== undefined) {
+      updates.mapLink = typeof updates.mapLink === 'string' ? updates.mapLink.trim() : '';
+      if (!updates.mapLink) updates.mapLink = undefined;
+    }
     if (imageUrls.length > 0) {
       updates.images = [...(venue.images || []), ...imageUrls];
     }

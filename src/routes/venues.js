@@ -29,6 +29,7 @@ router.post(
     body('name').trim().notEmpty(),
     body('description').trim().notEmpty(),
     body('address').trim().notEmpty(),
+    body('mapLink').optional({ values: 'falsy' }).trim().isURL({ require_protocol: true, protocols: ['http', 'https'] }),
     body('region').trim().notEmpty(),
     body('district').trim().notEmpty(),
     body('phone').trim().notEmpty(),
