@@ -6,6 +6,11 @@ const venueSchema = new mongoose.Schema(
     name: { type: String, required: true, trim: true },
     description: { type: String, required: true },
     address: { type: String, required: true },
+    location: {
+      lat: { type: Number, min: -90, max: 90 },
+      lng: { type: Number, min: -180, max: 180 },
+    },
+    mapLink: { type: String, trim: true },
     region: { type: String, required: true, trim: true },
     district: { type: String, required: true, trim: true },
     phone: { type: String, required: true },
