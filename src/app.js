@@ -16,6 +16,7 @@ const app = express();
 const allowedOrigins = [
   "http://localhost:3000",
   "https://toyxona-frontend.oktamovshohjahon596.workers.dev",
+  "https://toyxona-frontend.oktamovshohjahon596.workers.dev/",
   ...(process.env.FRONTEND_URL
     ? process.env.FRONTEND_URL.split(",").map((o) => o.trim())
     : []),
